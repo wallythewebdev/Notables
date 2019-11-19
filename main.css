@@ -1,0 +1,170 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: moon;
+    font-weight: bold;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    background: lightcoral;
+    padding: 25px 0;
+}
+
+
+form {
+    
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    background: lightcoral;
+    padding: 10%;
+    margin-top: -2px;
+}
+
+input {
+    padding: 25px 0;
+    border: 0;
+    text-align: center;
+}
+
+input::placeholder {
+    text-align: center;
+}
+
+/* section */
+
+section {
+    min-height: 50vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* styling the notes */
+
+.note {
+    width: 100%;
+    padding: 5%;
+    transition: 0.5s ease-in-out;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    margin: 0 5%;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    background: lightcoral;
+    width: 40%;
+    height: 30px;
+    margin: 5%;
+    border: none;
+    color: white;
+    font-size: 1rem;
+}
+
+.confirm {
+    background: black;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    margin: 0 5%;
+}
+
+/* animation  */
+
+.fade-in {
+    animation: fade-in 0.4s ease-in-out;
+    animation-fill-mode: forwards;
+    position: relative;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        top: -50px;
+    }
+
+    100% {
+        opacity: 100%;
+        top: 0px;
+    }
+
+}
+
+.fade-away {
+    animation: fade-away 0.4s ease-in-out;
+    animation-fill-mode: forwards;
+    position: relative;
+}
+
+@keyframes fade-away {
+    0% {
+        opacity: 1;
+        top: 0;
+    }
+
+    99% {
+        opacity: 0;
+        top: 50px;
+    }
+    100% {
+        opacity: 0;
+        top: 50px;
+    }
+
+}
+
+.editing-details {
+    
+    animation: editing-details 0.5s ease-in;
+    animation-fill-mode: forwards;
+}
+
+@keyframes editing-details {
+    0%{
+        
+    }
+    100% {
+        background-color: paleturquoise;
+        margin: 25px 0;
+    }
+}
+
+.noteCompleted {
+    animation: noteCompleted 0.5s ease-in-out;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes noteCompleted {
+    0% {
+        
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+
+footer {
+    height: 25vh;
+    background: lightseagreen;
+    position: relative;
+    bottom: 0;
+}
