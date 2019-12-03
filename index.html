@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="viewport" content="width=device-width inital-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
 
 
         <title>Notables</title>
@@ -19,7 +20,17 @@
 
             <input type="submit" onClick="uiControlls.getNote()">
         </form>
-
+        <div class="option_holder">
+            <button class="option" onclick="pushData.saveNotes()">Save Notes</button>
+            <button class="option" onclick="#">Note History</button>
+            <button class="option" onclick="pushData.pullLocal()">Load Notes</button>
+            <button class="option" onclick="generalCommands.clearNotes()">Clear All</button>
+        </div>
+        <div class="warningBox">
+            <p class="warningMessage">This will delete all notes that have not been saved yet</p>
+            <button class="YES">Yes</button>
+            <button class="NO">No</button>
+        </div>
         <section>
             <!-- <div class="note">
                 <div class="details">
@@ -41,6 +52,8 @@
         <footer>
 
         </footer>
+
+        
 
         <script src="script.js"></script>
     </body>

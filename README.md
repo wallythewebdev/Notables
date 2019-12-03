@@ -1,5 +1,9 @@
 # Notables
 
+See the live site here: 
+
+http://wallythewebdev.com/Notables/
+
 This is a note apliaction built out using Pure JS - 
 
 I intend to have several versions of this aplcation: 

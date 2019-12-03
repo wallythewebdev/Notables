@@ -49,6 +49,21 @@ section {
     overflow: hidden;
 }
 
+
+/* OPTIONS */
+
+.option_holder {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+button.option {
+    background: lightblue;
+    width: 50%;
+    margin: 0;
+    height: 5vh;
+}
+
 /* styling the notes */
 
 .note {
@@ -168,3 +183,52 @@ footer {
     position: relative;
     bottom: 0;
 }
+
+
+/* *******************
+    MESSAGES / WARNINGS
+******************** */
+
+.warningBox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 25px auto;
+    padding: 25px 10px;
+    text-align: center;
+    background-color: rgb(0,0,0,0.6);
+    border-radius: 25px;
+
+    max-height: 500px;
+
+    transition: 0.5s ease-in-out;
+
+    height: 0px;
+    z-index: 0;
+    opacity: 0;
+}
+
+.warningBox_show {
+    height: 100%;
+    z-index: 10;
+    opacity: 1;
+}
+
+
+.warningBox p {
+    color: white;
+}
+
+.warningBox button {
+    height: 50px;
+}
+
+.warningBox button.YES {
+    background-color: lightgreen;
+}
+
+.warningBox button.YES {
+    background-color: lightskyblue;
+}
+
