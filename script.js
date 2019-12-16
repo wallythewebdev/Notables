@@ -1,313 +1,366 @@
+// 1) get the value from the input 
+/*
+    - click submit
+    event listener
+    - values taken
+    read values
+    - values stored 
+    push into data storage
 
-const generalCommands = {
+
+*/ 
 
 
-    // I need to be able to have the warning message pop up and return if yes was clicked or no
+// BUG is that saved notes can double save there id's 
 
-    warningPrompt: function(messageText){
-        // apply the show to the warning box 
 
-        document.querySelector('.warningBox').classList.add('warningBox_show');
 
-        // debugger;
-        var checked = null;
-        // create a pop-up box that is a yes or no answer
+
+
+// UI controlls
+const uiControlls2 = (function(){
+    // DOMStrings
+    const DOMStrings = {
+        noteTitle: '.noteTitle',
+        noteDescription: '.noteDescription',
+        noteSubmit: '.noteSubmit',
+        noteIncert: 'section',
+        localStorageNotes: 'noteables_stored_notes',
+        save: '.save_Note',
+        history: '.note_history',
+        load: '.load_note',
+        clear: '.clear_all'
         
-        // take a input for the text of the warning "X" is the text
+    }
 
-        // return if YES or NO is clicked
-        var buttonYES = document.querySelector('button.YES');
-        var buttonNO = document.querySelector('button.NO');
-        buttonYES.addEventListener('click',function(){
-            checked = true;
-            return checked;
-        });
-        buttonNO.addEventListener('click',function(){
-            checked = false;
-            return checked;
-        })
-        
+    return{
+        getDomStrings: function(){
+            return DOMStrings;
+        },
 
-    },
+        getData: function(){
+            var title = document.querySelector(DOMStrings.noteTitle).value;
+            var description = document.querySelector(DOMStrings.noteDescription).value;
+            return {title, description}
+        },
 
-    // delete notes from screen && from local note if not saved
-    clearNotes: function(){
+        embedHTML: function(title, description, id){
+            var html, updateHTML;            
+            html = '<div class="note fade-in" id="noteNumber__%noteID%"><div class="details"><h2 class="title">%noteTitleText%</h2><p class="description">%noteDescriptionText%</p></div><div class="options"><button>edit</button><button class="complete">complete</button></div></div>';
+            html = html.replace('%noteID%', id);
+            updateHTML = html.replace('%noteTitleText%', title);
+            updateHTML = updateHTML.replace('%noteDescriptionText%', description);
 
-       var checked = generalCommands.compareNotes();
+            document.querySelector(DOMStrings.noteIncert).insertAdjacentHTML('beforeend', updateHTML);
+        },
 
-        // use a promise instead - 
-        // if there are no notes or notes length is 0 - return as nothing needs to be saved
-        if(dataStorage.notes === null || dataStorage.notes.length === 0 || checked === 1){
-            return;
-        } 
-        // else > show warning to user that un-saved notes 
-        else {
-            if(confirm('Any not saved data will be deleted')){
-                document.querySelector('section').innerHTML="";
-                dataStorage.notes=[];
+        embedHTML_completed: function(title, description, id){
+            var html, updateHTML;            
+            html = '<div class="note fade-in" id="noteNumber__%noteID%"><div class="details"><h2 class="title">%noteTitleText%</h2><p class="description">%noteDescriptionText%</p></div><div class="options_completed"><button class="edit_complete">edit</button></div></div>'; // << removed the completed button from the code as it is not needed
+            html = html.replace('%noteID%', id);
+            updateHTML = html.replace('%noteTitleText%', title);
+            updateHTML = updateHTML.replace('%noteDescriptionText%', description);
+
+            document.querySelector(DOMStrings.noteIncert).insertAdjacentHTML('beforeend', updateHTML);
+        },
+
+        clearText: function(){
+            // document.querySelector(DOMStrings.noteTitle).value="";
+            // document.querySelector(DOMStrings.noteDescription).value="";
+
+            // alt version of this
+            var inputFields, fieldsArr;
+
+            // create a nodeList for the inputs that need to removed
+            inputFields = document.querySelectorAll(`${DOMStrings.noteTitle},${DOMStrings.noteDescription}`);
+
+            // convet the node list to an array
+            fieldsArr = Array.prototype.slice.call(inputFields);
+
+            // cycle thought the array and remove the value of the Elements
+            fieldsArr.forEach((e)=>{
+                e.value="";
+            })
+            fieldsArr[0].focus();
+        }
+    }
+
+})();
+
+
+
+// Backend Controlls
+
+    var DOMStrings = uiControlls2.getDomStrings(); // <<<<< WHY? - think about this when not hungover
+
+    const backendControlls = (function(){
+
+    // create a data object for the note
+
+    var Note = function(title, description, id){
+        this.title = title;
+        this.description = description;
+        this.id = id;
+    }
+    
+    // Data storage
+
+    var notesData = [];
+
+    var completedNotes = [];
+
+    return{
+
+
+        // STORE NOTES - 
+        storeNote: function(title,description){
+            var id;
+
+            // give the note an ID >>> id will always be one higher than highest number
+            if(notesData.length > 0){
+                id = notesData[notesData.length -1].id + 1; // <<<< need to check this and the completed notes as well
             } else {
-                return
+                id = 0;
+            }
+            // create object
+            var usersNote = new Note(title, description, id);
+            // push to the data structure (array)
+            notesData.push(usersNote);
+            // retur the object
+            console.log(usersNote);
+            return usersNote;
+        },
+
+        // Push Loaded Notes & completd
+
+        pushLoaded_Completed: function(title,des,id){
+            // creates an object Note >>> using the localStored data
+            var usersNote = new Note(title, des, id);
+            // pushed localStored data to array
+            completedNotes.push(usersNote);
+        },
+
+        pushLoaded: function(title,des,id){
+            // creates an object Note >>> using the localStored data
+            var usersNote = new Note(title, des, id);
+            // pushed localStored data to array
+            notesData.push(usersNote);
+        },
+        
+
+        pushToCompleted: function(noteSplitID){
+            // debugger;
+            var ids, index;
+
+            ids = notesData.map(current => current.id)
+
+            index = ids.indexOf(noteSplitID);
+
+            completedNotes.push(notesData[index]);
+            
+            return index;
+        },
+
+        deleteNote: function(noteID, index){
+            // debugger;
+            var el;
+
+
+            // delete note note from the backend
+            notesData.splice(index,1);
+
+            backendControlls.CL_notesData();
+            // console.log(backendControlls.completedNotes);
+
+            // delete note from the UI
+            el = document.getElementById(noteID);
+            el.parentElement.removeChild(el);
+
+
+        },
+
+
+        // this function needs work! 
+        comapreSave_to_Local: function(){
+            debugger;
+            // // create an array of current stored notes
+            let currentSavedNotes, currentSavedNotes_completed, localNoteId, localCompleteId;
+
+
+            currentSavedNotes = JSON.parse(window.localStorage.getItem('Notables_userNotes')); // << get note
+            var savedID = currentSavedNotes.map(e => e.id) // << store note ids in array 
+            console.log(savedID);
+            currentSavedNotes_completed = JSON.parse(window.localStorage.getItem('Notables_userNotes_completed')); // get notes
+            var savedCompledID = currentSavedNotes_completed.map(e => e.id) // << store notes Id in array
+
+            // compare the two arrays and return the duplicates if any
+            // if the id exists in .window storage, do not re-save it 
+            // if statment 
+
+            localNoteId = notesData.map(e => e.id); // << may be redundant to write a var for this
+            console.log(localNoteId);
+            localCompleteId = completedNotes.map(e => e.id); // << may be redundant to write a var for this
+
+            var noteResult = localNoteId.filter(e=>savedID.indexOf(e) != 1);
+            
+            console.log(noteResult);
+        },
+
+        saveNote: function(){   
+
+            if(completedNotes.length > 0){
+                var completedNotesString = JSON.stringify(completedNotes);
+                window.localStorage.setItem('Notables_userNotes_completed', completedNotesString);
+            }
+            // bug where double saving notes
+            // if notes more than 0 && notes id do not match current notes?
+            if(notesData.length > 0){
+                var noteS = JSON.stringify(notesData); // convert the notes to string 
+                window.localStorage.setItem('Notables_userNotes', noteS); // pass string to local storage
+            }
+            
+        },
+
+
+        // delete later - this is for debuggin
+        returnNotes: function(){
+            return notesData;
+        },
+        // delete later - this is for debuggin
+        CL_complete: function(){
+            console.log(completedNotes);
+        },
+        // CONSOLE LOG NOTES LIST FOR CHECKS
+        CL_notesData: function(){
+            console.log(notesData);
+        } 
+    }
+   
+})()
+
+
+// controller
+const controller = (function(UIctrl,BEctrl){
+
+    getDomStrings = function(){
+        var DOMStringsList = UIctrl.DOMStrings;
+        return DOMStringsList;
+    }
+
+    // set up event listeners
+    var eventListeners = function(){
+        var DOMS = UIctrl.getDomStrings();
+        // adding a note 
+        document.querySelector(DOMS.noteSubmit).addEventListener('click',noteSubmitted);
+
+        // add enter clicked to add note
+        document.addEventListener('keypress',function(e){
+            if(e.code === "Enter" || e.keyCode === 13){
+                noteSubmitted();
+            }
+        })
+
+        // completing a note
+        document.querySelector(DOMS.noteIncert).addEventListener('click', noteCompleted);
+
+        // save note
+        document.querySelector(DOMStrings.save).addEventListener('click', saveNote);
+
+        // load a note
+        document.querySelector(DOMStrings.load).addEventListener('click', loadNotes);
+
+        // note history
+        document.querySelector(DOMStrings.history).addEventListener('click', noteHistory)
+    }
+
+    // 
+        var noteSubmitted = function(){
+            // 1 get the input from the user
+            var userNote = uiControlls2.getData();
+            console.log(userNote);
+            // 2 run check to make sure that it is valid
+            // check is - if title and description have text run if not return
+            if(userNote.title !== "" && userNote.description !== ""){
+                // 3 turn that data into an object using the function constucture
+                var noteObject = BEctrl.storeNote(userNote.title, userNote.description);
+                console.log(noteObject);
+                // 4 populate the not to the UI for the user
+                uiControlls2.embedHTML(noteObject.title, noteObject.description, noteObject.id)
+                // 5 clear the text from the UI screen
+                uiControlls2.clearText();
+            }
+            
+    }
+
+        var noteCompleted = function(event){
+            // debugger;
+            var completedButton, noteID, noteSplit, noteSplitID;
+            if(event.target.classList.value === 'complete'){ // event.target.classList.<VALUE> was missing 
+                completedButton = event.target;
+
+                // find the note id
+                noteID = completedButton.parentNode.parentNode.id
+
+                // remove that note from notes 
+                // split the noteID to find the number of the note 
+
+                noteSplit = noteID.split('__');
+                noteNumber = noteSplit[1];
+                noteSplitID = parseInt(noteNumber);
+                
+                // pass note to the completed notes
+                // debugger
+                var index = BEctrl.pushToCompleted(noteSplitID);
+
+                // delete the note from the unsaved Notes
+                BEctrl.deleteNote(noteID, index);
             }
         }
-           
-        
-        
-    },
 
-    compareNotes: function(){
-        var notesSavedOnline = JSON.parse(window.localStorage.getItem('notes'));
-        var localUnsavedNotes = dataStorage.notes;
-
-        // String the two to comapre them
-
-        notesSavedOnline = JSON.stringify(notesSavedOnline);
-        localUnsavedNotes = JSON.stringify(localUnsavedNotes);
-
-        // Check to see if they are they same ---- 
-        // return 1 if true 0 if false
-
-        // Maybe could use a turnery operator below instead of the if or else statment??????
-
-        if(notesSavedOnline === localUnsavedNotes) {
-            return 1;
-        } else {
-            return 0
+        var saveNote = function(){
+            BEctrl.saveNote();
         }
 
-    }
+        var loadNotes = function(){
+            // clear the current notes from the screen
+            // a) unless they are not saved
+            document.querySelector(DOMStrings.noteIncert).innerHTML="";
 
-}
+            let notesFromStorage;
+            // load local stored notes - 
+            notesFromStorage = JSON.parse(window.localStorage.getItem('Notables_userNotes'));
+            notesFromStorage.forEach(e => BEctrl.pushLoaded(e.title,e.description,e.id));
+            notesFromStorage.forEach(e => uiControlls2.embedHTML(e.title,e.description,e.id))
 
-
-// 1) ----- get the inputs from the form when the user clicks submit 
-// dont get the inptus if they have left out a field
-
-const uiControlls = {
-
-    // get the values
-
-    getNote: function(){
-        // debugger
-        var noteTitle = document.querySelector('input[name="noteTitle"]');
-        var noteDescription = document.querySelector('input[name="noteDescription"]');
-        dataStorage.notes.push({
-            title: noteTitle.value,
-            description: noteDescription.value
-        })
-        noteTitle.value="";
-        noteDescription.value="";
-
-        // call population automatically once you hit submit -
-
-        
-            population.createNotes();
-        
-        
-    }
-
-    
-}
-
-// 2) ----- store the information in the local cahce of the browser
-
-const dataStorage = {
-    notes: [], 
-
-    completedNotes: []
-}
-
-const pushData = {
-    
-    pushLocal: function(){
-        // debugger;
-        // If there is **not** a notes list already in local storage then take the notes in 
-        // dataStorage.notes and upload it to local storage
-        var isNotes = window.localStorage.getItem('notes');
-        if(isNotes === null){
-        window.localStorage.setItem('notes',JSON.stringify(dataStorage.notes));
+            // add completed notes
+            let notesFromStorage_compled;
+            notesFromStorage_compled = JSON.parse(window.localStorage.getItem('Notables_userNotes_completed'));
+            notesFromStorage_compled.forEach(e=> BEctrl.pushLoaded_Completed(e.title, e.description, e.id));
         }
-    }, 
 
-    pullLocal: function(){
-        // clear current notes if any
-        generalCommands.clearNotes();
-        // create a check to see if you have unsaved notes
+        var noteHistory = function(){
+            // debugger;
+            let completedNotes_stored, currentUI;
 
-        // pull notes from local storage
-        // dataStorage.notes.push(JSON.parse(window.localStorage.getItem('notes'))); ******************<<<<<<<<<<<< prior value
-        // create the notes in the window for the user to see
-        // *********** bug **************
-        // if there is only one note in the local storage then the aplcation will not pull the data 
-
-        // BETTER WAY BELOW - 
-
-        // get the notes
-        var localStoedNotes = JSON.parse(window.localStorage.getItem('notes'));
-        // for each of the notes push the note (object) to the dataStorage
-        localStoedNotes.forEach(e=>dataStorage.notes.push(e));
+            // get the notes that have been completed
+            completedNotes_stored = JSON.parse(window.localStorage.getItem('Notables_userNotes_completed'));
 
 
+            // remove the notes currently being showed / if any?
+            document.querySelector(DOMStrings.noteIncert).innerHTML='';
 
-        population.createNotes();
-
-
-    },
-
-    combineData: function(){
-            debugger;
-            // get the local notes
-            var created_notes = dataStorage.notes;
-            // get the local-storage notes
-                var local_stored_notes = JSON.parse(window.localStorage.getItem('notes'));
-            // check to see if there is any local-stored notes
-                if( local_stored_notes === null){
-                    window.localStorage.setItem('notes',JSON.stringify(local_stored_notes));
-                    // remove the notes from the data-stored notes
-                    dataStorage.notes=[];
-                    return
-                }   else {
-                    var combinedNotes = created_notes.concat(local_stored_notes);
-                    console.log(combinedNotes);
-                    // remove the current array -
-                        window.localStorage.removeItem('notes');
-                    // set a new updated array of notes
-                        window.localStorage.setItem('notes',JSON.stringify(combinedNotes));
-                    // reset the current notes - 
-                    dataStorage.notes=[]
-                    
-                }
-
-            
-
-            // combine them into a new array
-
-            // return the new array
-           
-    },
-
-    saveNotes: function(){
-        // push the notes to the local storage
-        
-        
-       
-        window.localStorage.setItem('notes',JSON.stringify(dataStorage.notes));
-    }
-}
-
-// 3) ----- create the elements for the div 
-
-const population = {
-
-    createNotes: function(){
-        
-        document.querySelector('section').innerHTML="";
-        for(i=0;i<dataStorage.notes.length;i++){
-            var title = dataStorage.notes[i].title;
-            var description = dataStorage.notes[i].description;
-            this.createNoteElements(title, description, i);
-
-        }
-    },
-
-    createLocalStorangeNotes: function(){
-        // debugger;
-        document.querySelector('section').innerHTML="";
-        for(i=0;i<dataStorage.notes[0].length;i++){
-            var title = dataStorage.notes[0][i].title;
-            var description = dataStorage.notes[0][i].description;
-            this.createNoteElements(title, description, i);
+            // populate the UI with the completed notes
+            completedNotes_stored.forEach(e=>uiControlls2.embedHTML_completed(e.title,e.description,e.id));
 
         }
 
-    },
-
-    createNoteElements: function(title,description, i){
-        // create dives
-        // perant >>>> 
-
-        let noteNumber = i;
-
-        let note = document.createElement('div');
-        note.className="note fade-in";
-        // siblings >>>>
-        let details = document.createElement('div')
-        details.className="details";
-        let options = document.createElement('div')
-        options.className="options";
-
-        // **************** details
-
-        // TITLE >>>>> 
-        let h2 = document.createElement('h2');
-        h2.innerHTML=title;
-        h2.className="title";
-        // DESCRIPTION >>>>>
-        let p = document.createElement('p');
-        p.innerHTML=description;
-        p.className="description";
-
-        details.appendChild(h2);
-        details.appendChild(p);
-
-        // **************** options
-        let edit = document.createElement('button');
-        edit.innerHTML="edit".className="edit";
-        
-        var complete = document.createElement('button');
-        complete.innerHTML="complete".className="complete";
-        // ************************
-        //  CLICK EVENT FOR COMPLETED BUTTON BELOW
-        // 1) create Confirm div + assign it styles
-        // 2) if confirm clicked - store the note in A) completed notes A-2) Remove note from current notes > and B) reload the notes
-        // ************************
-        // 1)
-        
-        var completeDuplicated;
-            complete.addEventListener('click', function(){
-                
-                if (completeDuplicated === undefined){
-                    completeDuplicated = 1
-                    var div = document.createElement('div');
-                    div.innerText="Confirm?";
-                    div.className="confirm fade-in";
-                    note.appendChild(div);
-                    // 2)
-                } 
-                
-                else{return}
-                
-               
-                div.addEventListener('click',function(){
-                   
-                    div.className="confirm fade-away";
-                    // >>>> Assign the note completed animation
-                    document.querySelectorAll('.note')[noteNumber].className="note noteCompleted";
-                    // A)
-                    dataStorage.completedNotes.push(dataStorage.notes[noteNumber]);
-                    // A-2)
-                    dataStorage.notes.splice(noteNumber,1);
-                    // B) - timeout function here is so that the animations line up -
-                    setTimeout(function(){
-                        population.createNotes();
-                    },1000)
-                })
-            })
-                
-                
-        
-        
-
-        options.appendChild(edit);
-        options.appendChild(complete);
-
-        // Append 
-        note.appendChild(details);
-        note.appendChild(options);
-
-        const section = document.querySelector('section');
-        section.appendChild(note);
+    return{
+        init: function(){
+            eventListeners();
+            loadNotes();
+        }
     }
-}
 
+})(uiControlls2,backendControlls);
 
-
+controller.init();
