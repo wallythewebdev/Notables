@@ -153,33 +153,38 @@ const uiControlls2 = (function(){
 
         // STORE NOTES - 
         storeNote: function(title,description){
-            // debugger;
+          
+
             let id, idComp;
 
-            // give the note an ID >>> id will always be one higher than highest number
-            // check which number is higher, them completed notes or the local notes
-            if(notesData.length > 0){
-                id = notesData[notesData.length -1].id + 1; // <<<< need to check this and the completed notes as well
-                if(completedNotes.length === 0){
-                    idComp = 0
-                } else if(completedNotes.length > 0) {
-                    idComp = completedNotes[completedNotes.length -1].id +1
-                }
-                if(id > idComp) {
-                    // create object using id number
-                    var usersNote = new Note(title, description, id);
-                } else if (idComp > id){
-                    var usersNote = new Note(title, description, idComp);
-                }
-            } else {
-                id = 0;
+            // A) -- if no ID set ID as 0 / else set ID as ID.length + 1
+            if(notesData.length === 0){
+                id = 0
             }
-            var usersNote = new Note(title, description, id);
-            // push to the data structure (array)
+            else if(notesData.length > 0){
+                id = notesData[notesData.length -1].id + 1; // <<<< need to check this and the completed notes as well
+            }
+
+            // B) repeat A for complete notes
+            if(completedNotes.length === 0){
+                idComp = 0
+            } else if(completedNotes.length > 0) {
+                    idComp = completedNotes[completedNotes.length -1].id +1
+            }
+
+            // C) checks - find highest number for ID
+            if(id === idComp){
+                var usersNote = new Note(title, description, id);
+            }
+            else if(id > idComp) {
+                // create object using id number
+                var usersNote = new Note(title, description, id);
+            } else if (idComp > id){
+                var usersNote = new Note(title, description, idComp);
+            }
+            
             notesData.push(usersNote);
-            // retur the object
-            console.log(usersNote);
-            return usersNote;
+            return usersNote; // << used in another function so returned 
         },
 
         // Push Loaded Notes & completd
@@ -395,7 +400,6 @@ const controller = (function(UIctrl,BEctrl){
 
     // 
         var noteSubmitted = function(){
-            // debugger;
             // 1 get the input from the user
             var userNote = uiControlls2.getData();
             console.log(userNote);
