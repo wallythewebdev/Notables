@@ -2,7 +2,7 @@
 
 This is a note aplication that stores data in the users local browser storage
 
-Review front end of app: (Notables)[https://wallythewebdev.github.io/Notables/]
+#**[Notables](https://wallythewebdev.github.io/Notables/)**
 
 This app uses the CRUD method and IFFIE functions to allow only the controller to accsess functions
 
