@@ -18,7 +18,7 @@ h1 {
 }
 
 
-form {
+.input_fields {
     
     height: 50vh;
     display: flex;
@@ -49,6 +49,21 @@ section {
     overflow: hidden;
 }
 
+
+/* OPTIONS */
+
+.option_holder {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+button.option {
+    background: lightblue;
+    width: 50%;
+    margin: 0;
+    height: 5vh;
+}
+
 /* styling the notes */
 
 .note {
@@ -72,7 +87,7 @@ button {
     background: lightcoral;
     width: 40%;
     height: 30px;
-    margin: 5%;
+    margin: 25px auto;
     border: none;
     color: white;
     font-size: 1rem;
@@ -168,3 +183,7 @@ footer {
     position: relative;
     bottom: 0;
 }
+
+
+
+

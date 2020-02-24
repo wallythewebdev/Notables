@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="viewport" content="width=device-width inital-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
 
 
         <title>Notables</title>
@@ -13,15 +14,24 @@
         <!-- need a input -->
         <!-- this will be a form and a submit for the form -->
 
-        <form>
-            <input type="text" name="noteTitle" placeholder="note title" required>
-            <input type="text" name="noteDescription" placeholder="description" required>
+        
+            
 
-            <input type="submit" onClick="uiControlls.getNote()">
-        </form>
+        <div class="input_fields">  
+        <input class="noteTitle" type="text" name="noteTitle" placeholder="note title">
+        <input class="noteDescription" type="text" name="noteDescription" placeholder="description">
+        <button class="noteSubmit">SUBMIT</button>
+        </div>
 
+        <div class="option_holder">
+            <button class="option save_Note" >Save Notes</button>
+            <button class="option note_history" >Note History</button>
+            <button class="option load_note" >Load Notes</button>
+            <button class="option clear_all" >Clear All</button>
+        </div>
+        
         <section>
-            <!-- <div class="note">
+            <!--<div class="note">
                 <div class="details">
                 <h2 class="title">Meditate</h2>
                 <p class="description">Today it would be great to mediation for a little bit and keep my headspace score alive</p>
@@ -31,6 +41,8 @@
                     <button class="complte">complete</button>
                 </div>
             </div> -->
+
+            
 
         </section>
 
@@ -42,6 +54,9 @@
 
         </footer>
 
+        
+
         <script src="script.js"></script>
+        <script src="script2.js"></script>
     </body>
 </html>
