@@ -1,59 +1,45 @@
 # Notables
 
-See the live site here: 
+This is a note aplication that stores data in the users local browser storage
 
-http://wallythewebdev.com/Notables/
+#**[Notables](https://wallythewebdev.github.io/Notables/)**
 
-This is a note apliaction built out using Vanilla JS - 
+This app uses the CRUD method and IFFIE functions to allow only the controller to accsess functions
 
-I intend to have several versions of this aplcation: 
+**Create**
 
-Road Map: 
+- [] Notes are saved to the UI for the users.
+- [] Notes are stored in a object and converted to JSON to be passed to the browsers local storage
 
-v1 - current build
+**Read**
 
-Aplications, takes notes, stores them until they are completed or until the aplcation is reset
+- [] Notes are retried from the browser local storage JSON file and converted to a JS Obj
+This is then populate to the UI for the user to view
 
-v2 - aplcation uses local storage of the device to keep a record of the notes taken for more functioncal use
+**Update**
 
-V2.1 REWORKING 
+- [] Editing a note allows you to update the title and description, this edits the note data and reloads the notes
+with the updated details
 
-    1) re work the moudle layout of the JS - :: completed
+**Delete**
 
-    controller: controlls buttons of app :: completed
+- [] This did not suit the purpose of the App that I was creating - 
+however, completing a note will re-crceate the note under the completed notes obj and remove
+it from the current notes Obj
 
-    UIControlls: controlls inputs :: completed
 
-    NoteApp: controlls maths 
+**planning**
 
-    2) add DOMstrings to prevent unwanted bugs from change in classNames down the track :: completed
+This aplcation was developed using a moduel approach
 
-    3) re-work the functions to be private - use of IIFE and return i.e. 
+**UI**
 
-    var UIcontroller = (function(){
-        <!-- PRIVATE -->
+modules here will update the users UI
 
-        return {
-            <!-- PUBLIC -->
+**back end controlls**
 
-        }
-    })()
+modules will update the stored data
 
-    :: completd 
+**controller**
 
-    3) storing data - create a function constructor for the data being stored: this will allow functions to be assigned to that data VIA 
-    the prototype chain
-
-    4) update the created notes > to be inputted via inputAdjacentHTML rather than appending multiple child elements
-
-    5) restructure the data of how the note details are being held
-
-v3 - additional reporting to be added, so, user may better understand there ability to fulfill tasks
-
-v4 - log on system to be implimented so data can be accsessed from multiple platforms
-
-v5 - practices will be implimented into the MEDS aplcation
-
-----
-
-This build will most likerly be rebuilt using a frame work and pointed at as reference. 
+will initiate the UI and backend working together
